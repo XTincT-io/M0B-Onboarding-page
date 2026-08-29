@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M0B — Musicians On Blockchain // Onboarding Transmission</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#07060B;
+    --panel:#100C1B;
+    --panel-alt:#180F2A;
+    --signal:#FF2E6C;
+    --signal-dim: rgba(255,46,108,0.35);
+    --cyan:#2EE6D6;
+    --cyan-dim: rgba(46,230,214,0.3);
+    --amber:#FFB020;
+    --phosphor:#4CFF7A;
+    --text:#ECE9F5;
+    --text-dim:#8B85A3;
+    --border: rgba(236,233,245,0.12);
+    --border-bright: rgba(236,233,245,0.28);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--void);
+    color:var(--text);
+    font-family:'Space Grotesk', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  ::selection{background:var(--signal); color:var(--void);}
+
+  h1,h2,h3, .mono, .eyebrow, .btn, nav .dot-label, .field label, .chip, .term{
+    font-family:'Chakra Petch', sans-serif;
+    letter-spacing:0.02em;
+  }
+  .term, .type-line, .readout, input, textarea{
+    font-family:'Share Tech Mono', monospace;
+  }
+
+  /* ---------- CRT / atmosphere layers ---------- */
+  .crt-scanlines{
+    pointer-events:none;
+    position:fixed; inset:0; z-index:60;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.028) 0px,
+      rgba(255,255,255,0.028) 1px,
+      transparent 2px,
+      transparent 3px
+    );
+    mix-blend-mode:overlay;
+    animation: scan-drift 9s linear infinite;
+  }
+  .crt-vignette{
+    pointer-events:none;
+    position:fixed; inset:0; z-index:59;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%);
+  }
+  .crt-flicker{
+    pointer-events:none;
+    position:fixed; inset:0; z-index:58;
+    background: rgba(255,255,255,0.012);
+    animation: flicker 6.5s infinite;
+  }
+  .noise-grid{
+    pointer-events:none;
+    position:fixed; inset:0; z-index:0;
+    background-image:
+      linear-gradient(rgba(236,233,245,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(236,233,245,0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 0%, black, transparent 75%);
+            mask-image: radial-gradient(ellipse at 50% 0%, black, transparent 75%);
+    opacity:0.5;
+  }
+  @keyframes scan-drift{ 0%{ transform: translateY(0);} 100%{ transform: translateY(3px);} }
+  @keyframes flicker{
+    0%, 96%, 100% { opacity: 1; }
+    97% { opacity: 0.85; }
+    98% { opacity: 1; }
+    99% { opacity: 0.92; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .crt-scanlines, .crt-flicker, *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+    html{scroll-behavior:auto;}
+  }
+  /* JS below checks this same query before using the eased fast-scroll */
+
+  /* ---------- layout shell ---------- */
+  main{ position:relative; z-index:1; }
+  section{
+    padding: 128px 8vw 96px;
+    position:relative;
+    border-bottom:1px solid var(--border);
+  }
+  .section-inner{ max-width:1080px; margin:0 auto; position:relative; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:12.5px; letter-spacing:0.28em; text-transform:uppercase;
+    color:var(--cyan); margin-bottom:22px; font-weight:600;
+  }
+  .eyebrow::before{
+    content:''; width:22px; height:1px; background:var(--cyan); display:inline-block;
+    box-shadow:0 0 8px var(--cyan);
+  }
+  h2{ font-size:clamp(28px,4vw,42px); font-weight:600; margin:0 0 18px; line-height:1.15;}
+  h2 .accent{ color:var(--signal); }
+  .lede{ font-size:17px; line-height:1.7; color:var(--text-dim); max-width:620px; margin-bottom:48px;}
+
+  /* ---------- side nav ---------- */
+  .railnav{
+    position:fixed; right:26px; top:50%; transform:translateY(-50%);
+    z-index:50; display:flex; flex-direction:column; gap:16px;
+    align-items:flex-end;
+  }
+  .railnav a{
+    display:flex; align-items:center; gap:10px; text-decoration:none;
+    color:var(--text-dim); font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
+    opacity:0.55; transition: opacity .35s ease, color .35s ease;
+  }
+  .railnav a .dot{
+    width:7px; height:7px; border-radius:50%; background:var(--text-dim);
+    box-shadow:0 0 0 rgba(0,0,0,0);
+    transition: all .35s ease;
+  }
+  .railnav a.active, .railnav a:hover{ opacity:1; color:var(--cyan);}
+  .railnav a.active .dot, .railnav a:hover .dot{
+    background:var(--cyan); box-shadow:0 0 10px var(--cyan), 0 0 2px var(--cyan);
+    transform:scale(1.3);
+  }
+  @media (max-width:900px){ .railnav{display:none;} }
+
+  /* ---------- HERO ---------- */
+  #hero{
+    min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+    padding-top:80px; border-bottom:1px solid var(--border);
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(255,46,108,0.12), transparent 60%),
+      radial-gradient(1000px 700px at 100% 10%, rgba(46,230,214,0.10), transparent 55%);
+  }
+  .hero-tag{
+    font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.32em;
+    margin-bottom:26px; display:flex; align-items:center; gap:10px;
+  }
+  .pulse-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--phosphor);
+    box-shadow:0 0 8px var(--phosphor);
+    animation:pulse-dot 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse-dot{
+    0%,100%{ transform:scale(1); opacity:1;}
+    50%{ transform:scale(1.6); opacity:0.5;}
+  }
+  .hero-title{
+    font-size:clamp(56px, 11vw, 132px); line-height:0.92; font-weight:700; margin:0;
+    letter-spacing:-0.01em;
+    background:linear-gradient(180deg, #fff 0%, var(--text) 40%, var(--text-dim) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 60px rgba(255,46,108,0.15);
+  }
+  .hero-title .glitch-wrap{ position:relative; display:inline-block; color:var(--signal); -webkit-text-fill-color:var(--signal);}
+  .hero-sub{
+    margin-top:26px; max-width:640px; font-size:18px; line-height:1.7; color:var(--text-dim);
+  }
+  .type-cursor{ display:inline-block; width:10px; height:1em; background:var(--signal); margin-left:4px; vertical-align:-2px; animation:blink 1s steps(1) infinite; }
+  @keyframes blink{ 50%{opacity:0;} }
+
+  .hero-ctas{ display:flex; gap:18px; margin-top:44px; flex-wrap:wrap;}
+
+  /* ---------- fluid buttons ---------- */
+  .btn{
+    position:relative; overflow:hidden; cursor:pointer;
+    border:1px solid var(--border-bright); background:transparent; color:var(--text);
+    padding:16px 30px; font-size:13.5px; text-transform:uppercase; letter-spacing:0.16em;
+    border-radius:999px; transition: transform .45s cubic-bezier(.2,.9,.25,1), border-color .35s ease, color .35s ease;
+    display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+  }
+  .btn::before{
+    content:''; position:absolute; inset:0; border-radius:999px;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,46,108,0.55), transparent 60%);
+    opacity:0; transition:opacity .4s ease;
+  }
+  .btn:hover{ transform:translateY(-3px) scale(1.02); border-color:var(--signal); }
+  .btn:hover::before{ opacity:1; }
+  .btn span{ position:relative; z-index:1; }
+  .btn.primary{ background:var(--signal); border-color:var(--signal); color:#160310; font-weight:600;
+    box-shadow:0 0 0 rgba(255,46,108,0); }
+  .btn.primary:hover{ box-shadow:0 10px 40px -6px var(--signal-dim); color:#160310; }
+  .btn.primary::before{ background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.5), transparent 60%);}
+  .btn.ghost:hover{ color:var(--cyan); border-color:var(--cyan);}
+  .btn.ghost::before{ background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(46,230,214,0.45), transparent 60%);}
+  .btn.small{ padding:11px 20px; font-size:11.5px; }
+  .btn.full{ width:100%; justify-content:center; }
+  .btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none !important; }
+  .btn.pulse-click{ animation: btnPulse 0.42s cubic-bezier(.2,.9,.25,1); }
+  @keyframes btnPulse{
+    0%{ transform:scale(1); }
+    35%{ transform:scale(0.93); box-shadow:0 0 26px var(--signal-dim); }
+    100%{ transform:scale(1); }
+  }
+
+  /* scroll-reveal */
+  .reveal{ opacity:0; transform:translateY(28px); transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- cards / grids ---------- */
+  .grid{ display:grid; gap:18px; }
+  .grid.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .grid.cols-2{ grid-template-columns:repeat(2,1fr); }
+  @media (max-width:820px){ .grid.cols-3, .grid.cols-2{ grid-template-columns:1fr; } }
+
+  .card{
+    background:linear-gradient(180deg, var(--panel), var(--panel-alt));
+    border:1px solid var(--border); border-radius:14px; padding:26px 24px;
+    position:relative; overflow:hidden;
+    transition:border-color .4s ease, transform .4s ease;
+  }
+  .card:hover{ border-color:var(--border-bright); transform:translateY(-4px); }
+  .card::after{
+    content:''; position:absolute; left:0; right:0; top:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--accent, var(--cyan)), transparent);
+    opacity:0; transition:opacity .4s ease;
+  }
+  .card:hover::after{ opacity:1; }
+  .card .idx{ font-family:'Share Tech Mono',monospace; color:var(--text-dim); font-size:12px; letter-spacing:0.1em;}
+  .card h3{ font-size:19px; margin:10px 0 10px; font-weight:600; }
+  .card p{ font-size:14.5px; line-height:1.65; color:var(--text-dim); margin:0; }
+  .card ul{ margin:12px 0 0; padding-left:18px; color:var(--text-dim); font-size:14px; line-height:1.7;}
+  .card.safety{ --accent: var(--amber); border-color:rgba(255,176,32,0.25); }
+  .card.safety h3{ color:var(--amber); }
+  .card.safety .idx{ color:var(--amber); }
+  .card.wallet .idx{ color:var(--cyan); }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .chip{
+    font-size:11.5px; padding:6px 12px; border-radius:999px; border:1px solid var(--border-bright);
+    color:var(--text-dim); letter-spacing:0.04em;
+  }
+
+  /* progress path for getting-started sequence */
+  .path-track{
+    position:relative; padding-left:26px; margin-top:8px;
+    border-left:1px solid var(--border);
+  }
+  .path-step{ position:relative; padding:0 0 46px 26px; }
+  .path-step:last-child{ padding-bottom:0; }
+  .path-step::before{
+    content:''; position:absolute; left:-33px; top:2px; width:13px; height:13px; border-radius:50%;
+    background:var(--void); border:2px solid var(--signal); box-shadow:0 0 12px var(--signal-dim);
+  }
+
+  /* resources / archive */
+  .resource-row{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding:20px 22px; border:1px solid var(--border); border-radius:12px; margin-bottom:14px;
+    background:var(--panel); transition:border-color .3s ease, transform .3s ease;
+  }
+  .resource-row:hover{ border-color:var(--cyan-dim); transform:translateX(4px); }
+  .resource-row .rlabel{ font-weight:600; font-size:15.5px; }
+  .resource-row .rmeta{ font-size:12.5px; color:var(--text-dim); font-family:'Share Tech Mono',monospace;}
+
+  /* ---------- FORM ---------- */
+  .join-wrap{
+    background:linear-gradient(180deg, var(--panel), var(--panel-alt));
+    border:1px solid var(--border-bright); border-radius:20px; padding:46px;
+    position:relative; overflow:hidden;
+  }
+  .join-wrap::before{
+    content:''; position:absolute; top:-40%; right:-20%; width:60%; height:180%;
+    background:radial-gradient(circle, rgba(255,46,108,0.14), transparent 65%);
+    pointer-events:none;
+  }
+  @media (max-width:640px){ .join-wrap{ padding:28px 20px; } }
+
+  form{ position:relative; z-index:1; }
+  .field{ margin-bottom:22px; }
+  .field label{
+    display:block; font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--text-dim); margin-bottom:9px;
+  }
+  .field label .req{ color:var(--signal); margin-left:4px;}
+  .field input{
+    width:100%; background:rgba(0,0,0,0.35); border:1px solid var(--border-bright);
+    border-radius:8px; padding:13px 15px; color:var(--text); font-size:14px;
+    transition:border-color .3s ease, box-shadow .3s ease; outline:none;
+  }
+  .field input::placeholder{ color:rgba(139,133,163,0.6); }
+  .field input:focus{ border-color:var(--cyan); box-shadow:0 0 0 3px var(--cyan-dim); }
+  .field-hint{ font-size:11.5px; color:var(--text-dim); margin-top:6px; }
+
+  .chain-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px 20px; }
+  @media (max-width:640px){ .chain-grid{ grid-template-columns:1fr; } }
+  .chain-field label{ display:flex; align-items:center; gap:8px; }
+  .chain-dot{ width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 6px var(--cyan); }
+
+  .divider-label{
+    display:flex; align-items:center; gap:14px; margin:34px 0 22px; color:var(--text-dim);
+    font-size:11.5px; text-transform:uppercase; letter-spacing:0.2em;
+  }
+  .divider-label::before, .divider-label::after{ content:''; flex:1; height:1px; background:var(--border);}
+
+  .terminal-status{
+    font-family:'Share Tech Mono',monospace; font-size:13px; color:var(--phosphor);
+    margin-top:18px; min-height:20px; letter-spacing:0.02em;
+  }
+
+  .success-panel{ display:none; }
+  .success-panel.show{ display:block; }
+  .success-panel h3{ color:var(--phosphor); font-size:22px; margin-bottom:10px; }
+  .success-panel p{ color:var(--text-dim); line-height:1.7; margin-bottom:26px; }
+
+  form.submitted{ display:none; }
+
+  footer{
+    padding:52px 8vw 60px; text-align:center; color:var(--text-dim); font-size:12.5px;
+    letter-spacing:0.06em;
+  }
+  footer .m0b-mark{ font-family:'Chakra Petch',sans-serif; color:var(--text); font-weight:700; letter-spacing:0.1em; margin-bottom:10px; display:block;}
+
+  a.textlink{ color:var(--cyan); text-decoration:none; border-bottom:1px solid var(--cyan-dim); transition:border-color .3s ease;}
+  a.textlink:hover{ border-color:var(--cyan); }
+</style>
+</head>
+<body>
+
+<div class="crt-scanlines"></div>
+<div class="crt-vignette"></div>
+<div class="crt-flicker"></div>
+<div class="noise-grid"></div>
+
+<nav class="railnav" id="railnav">
+  <a href="#hero" data-target="hero"><span class="dot-label">SIGNAL</span><span class="dot"></span></a>
+  <a href="#transmission" data-target="transmission"><span class="dot-label">M0B</span><span class="dot"></span></a>
+  <a href="#protocol" data-target="protocol"><span class="dot-label">PROTOCOL</span><span class="dot"></span></a>
+  <a href="#wallets" data-target="wallets"><span class="dot-label">WALLETS</span><span class="dot"></span></a>
+  <a href="#safety" data-target="safety"><span class="dot-label">SAFETY</span><span class="dot"></span></a>
+  <a href="#archive" data-target="archive"><span class="dot-label">ARCHIVE</span><span class="dot"></span></a>
+  <a href="#join" data-target="join"><span class="dot-label">JOIN</span><span class="dot"></span></a>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="section-inner">
+      <div class="hero-tag"><span class="pulse-dot"></span> LIVE FEED — ONBOARDING SEQUENCE INITIATED</div>
+      <h1 class="hero-title">M<span class="glitch-wrap">0</span>B<span class="type-cursor"></span></h1>
+      <p class="hero-sub">Musicians On Blockchain. A multi-chain home for artists minting their first release as a real, ownable asset — no gatekeepers, no label math, just your work on-chain. This is the full transmission: wallets, protocol basics, safety, and the archive you'll need before you mint.</p>
+      <div class="hero-ctas">
+        <a href="#join" class="btn primary fast-scroll" data-magnetic><span>Join the Signal</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRANSMISSION / ABOUT -->
+  <section id="transmission">
+    <div class="section-inner reveal">
+      <div class="eyebrow">Transmission 01</div>
+      <h2>What <span class="accent">M0B</span> actually is</h2>
+      <p class="lede">Musicians On Blockchain is a community and toolset for artists releasing music as NFTs — across chains, not locked to one ecosystem. No prior crypto experience required. This page is the entire on-ramp: read it top to bottom, get your wallet ready, then join.</p>
+      <div class="grid cols-3">
+        <div class="card">
+          <div class="idx">// WHO IT'S FOR</div>
+          <h3>Artists, first mint</h3>
+          <p>Musicians putting a release on-chain for the first time — singles, EPs, stems, or one-off collectibles tied to a drop.</p>
+        </div>
+        <div class="card">
+          <div class="idx">// WHY MULTI-CHAIN</div>
+          <h3>No single point of lock-in</h3>
+          <p>EVM, Polkadot, Tezos, Cardano, XRPL, Bitcoin — different chains suit different releases and audiences. M0B doesn't force one.</p>
+        </div>
+        <div class="card">
+          <div class="idx">// WHAT YOU GET</div>
+          <h3>Roadmap + resources</h3>
+          <p>The onboarding deck and working board — sent straight to you when you join below.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTOCOL / BLOCKCHAIN FOUNDATIONS -->
+  <section id="protocol">
+    <div class="section-inner reveal">
+      <div class="eyebrow">Transmission 02</div>
+      <h2>Blockchain, in plain terms</h2>
+      <p class="lede">Four concepts cover almost everything you need before your first mint. No jargon beyond this.</p>
+      <div class="grid cols-2">
+        <div class="card">
+          <div class="idx">01 / LEDGER</div>
+          <h3>What a blockchain is</h3>
+          <p>A public record shared across thousands of computers instead of one company's server. Once something is written to it, it can't be quietly edited — that's what makes ownership on it mean something.</p>
+        </div>
+        <div class="card">
+          <div class="idx">02 / NFT</div>
+          <h3>What "minting" means</h3>
+          <p>Minting writes a unique, traceable record of your track (or art tied to it) onto the chain, with your wallet as the origin. The NFT is the certificate of ownership — the audio file itself is usually stored alongside it, not "inside" it.</p>
+        </div>
+        <div class="card">
+          <div class="idx">03 / GAS</div>
+          <h3>Why transactions cost money</h3>
+          <p>"Gas" is the small fee paid to the network for processing your transaction. It varies by chain and congestion — some chains (Tezos, Polygon, XRPL) are built to keep this near-zero, which matters for artists minting often.</p>
+        </div>
+        <div class="card">
+          <div class="idx">04 / CHAINS</div>
+          <h3>The landscape you're choosing from</h3>
+          <p>EVM chains (Ethereum, Base, Polygon) dominate NFT tooling. Tezos and Cardano built early artist-first, low-fee ecosystems. XRPL and Polkadot are newer entrants for music-specific rails. Bitcoin now supports NFTs via Ordinals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WALLETS -->
+  <section id="wallets">
+    <div class="section-inner reveal">
+      <div class="eyebrow">Transmission 03</div>
+      <h2>Get a wallet per chain</h2>
+      <p class="lede">A wallet is your identity and your signature on-chain — it's what you'll use to mint, receive, and sell. You don't need all of these; only set up a wallet for the chain(s) you plan to release on.</p>
+      <div class="grid cols-3">
+        <div class="card wallet"><div class="idx">EVM</div><h3>Ethereum / Base / Polygon</h3><p>MetaMask, Rainbow, or Coinbase Wallet. The most widely supported across NFT marketplaces.</p></div>
+        <div class="card wallet"><div class="idx">POLKADOT</div><h3>Polkadot / parachains</h3><p>Polkadot{.js}, Talisman, or SubWallet.</p></div>
+        <div class="card wallet"><div class="idx">TEZOS</div><h3>Tezos (XTZ)</h3><p>Temple Wallet or Kukai — the standard pair for Tezos-based NFT platforms.</p></div>
+        <div class="card wallet"><div class="idx">CARDANO</div><h3>Cardano (ADA)</h3><p>Eternl, Yoroi, or Nami.</p></div>
+        <div class="card wallet"><div class="idx">XRPL</div><h3>XRP Ledger</h3><p>Xaman (formerly Xumm) — the default wallet for XRPL-native NFTs.</p></div>
+        <div class="card wallet"><div class="idx">BITCOIN</div><h3>Bitcoin (Ordinals)</h3><p>Sparrow or Xverse for ordinals, or a Ledger/Trezor hardware wallet for cold storage.</p></div>
+      </div>
+      <div class="chip-row">
+        <span class="chip">One seed phrase = one wallet</span>
+        <span class="chip">Test with a small amount first</span>
+        <span class="chip">Your public address is safe to share — your seed phrase never is</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAFETY -->
+  <section id="safety">
+    <div class="section-inner reveal">
+      <div class="eyebrow">Transmission 04 — Priority</div>
+      <h2>Wallet <span style="color:var(--amber)">safety</span> is non-negotiable</h2>
+      <p class="lede">Most people don't lose funds to hacks — they lose them to phishing links and shared seed phrases. Five rules cover almost every real-world loss.</p>
+      <div class="path-track">
+        <div class="path-step">
+          <h3 style="margin:0 0 6px;">Your seed phrase is the wallet</h3>
+          <p style="color:var(--text-dim); margin:0; font-size:14.5px; line-height:1.65;">Anyone with your 12–24 word recovery phrase has full control of everything in that wallet. No legitimate platform, marketplace, or support agent will ever ask for it — not in a DM, not on a call.</p>
+        </div>
+        <div class="path-step">
+          <h3 style="margin:0 0 6px;">Write it down, offline</h3>
+          <p style="color:var(--text-dim); margin:0; font-size:14.5px; line-height:1.65;">Paper or a metal backup, stored somewhere physical. Never a screenshot, note app, email draft, or cloud file.</p>
+        </div>
+        <div class="path-step">
+          <h3 style="margin:0 0 6px;">Verify every URL before connecting</h3>
+          <p style="color:var(--text-dim); margin:0; font-size:14.5px; line-height:1.65;">Fake marketplace and mint-site clones are the most common attack. Bookmark real links, and double-check before approving any wallet connection or transaction.</p>
+        </div>
+        <div class="path-step">
+          <h3 style="margin:0 0 6px;">Use a hardware wallet for anything valuable</h3>
+          <p style="color:var(--text-dim); margin:0; font-size:14.5px; line-height:1.65;">A Ledger or Trezor keeps your keys offline. For a wallet holding real earnings or masters, this is the single biggest upgrade you can make.</p>
+        </div>
+        <div class="path-step">
+          <h3 style="margin:0 0 6px;">Separate "hot" and "cold" wallets</h3>
+          <p style="color:var(--text-dim); margin:0; font-size:14.5px; line-height:1.65;">Keep a small working wallet for day-to-day minting and connecting to sites. Keep a separate wallet — ideally hardware-backed — for anything you're not actively using.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHIVE / WHITEPAPER RESOURCES -->
+  <section id="archive">
+    <div class="section-inner reveal">
+      <div class="eyebrow">Transmission 05</div>
+      <h2>The archive</h2>
+      <p class="lede">Reference material for anyone who wants the full picture before minting. These same links are sent to you automatically when you join below.</p>
+
+      <div class="resource-row">
+        <div>
+          <div class="rlabel">Music Blockchain Initiatives</div>
+          <div class="rmeta">An open source decentralized music mind map</div>
+        </div>
+        <a class="btn small ghost" href="https://miro.com/app/board/o9J_kqkQyeI=/?moveToWidget=3458764514051869007&amp;cot=14" target="_blank" rel="noopener"><span>Open Board →</span></a>
+      </div>
+
+      <div class="resource-row">
+        <div>
+          <div class="rlabel">Goodwaves Onboarding sesh</div>
+          <div class="rmeta">Visual walkthrough on doing the thing of everything on this page :D</div>
+        </div>
+        <a class="btn small ghost" href="https://docs.google.com/presentation/d/10DesrKKe9Vd_xIjJ_7yJ9j1-n0j9D0xx/edit?usp=sharing&amp;ouid=113354780348049653404&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener"><span>Open Deck →</span></a>
+      </div>
+
+      <div class="resource-row" style="opacity:0.6;">
+        <div>
+          <div class="rlabel">M0B Whitepaper</div>
+          <div class="rmeta">Link pending — add your whitepaper URL to activate this card</div>
+        </div>
+        <span class="btn small" style="pointer-events:none; border-style:dashed;"><span>Coming Soon</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN / SIGNUP -->
+  <section id="join">
+    <div class="section-inner reveal">
+      <div class="eyebrow">Transmission 06 — Final</div>
+      <h2>Join the <span class="accent">M0B</span> signal</h2>
+      <p class="lede">Give us your artist name, a link to your work, and whichever wallet address(es) you'll be minting from. Everything else is optional — fill in only the chains you use.</p>
+
+      <div class="join-wrap">
+        <form id="joinForm" novalidate>
+          <div class="field">
+            <label for="artistName">Artist / Project Name<span class="req">*</span></label>
+            <input type="text" id="artistName" name="artistName" placeholder="e.g. XTincT" required>
+          </div>
+          <div class="field">
+            <label for="artistLink">Link (website, Linktree, socials)<span class="req">*</span></label>
+            <input type="url" id="artistLink" name="artistLink" placeholder="https://" required>
+          </div>
+          <div class="field">
+            <label for="artistEmail">Email<span class="req">*</span></label>
+            <input type="email" id="artistEmail" name="artistEmail" placeholder="you@domain.com" required>
+            <div class="field-hint">Your welcome transmission — Miro board and onboarding deck — gets sent here.</div>
+          </div>
+
+          <div class="divider-label">Wallet Addresses — fill in what applies</div>
+
+          <div class="chain-grid">
+            <div class="field chain-field">
+              <label><span class="chain-dot"></span>EVM (ETH / Base / Polygon)</label>
+              <input type="text" id="walletEvm" name="walletEvm" placeholder="0x...">
+            </div>
+            <div class="field chain-field">
+              <label><span class="chain-dot"></span>Polkadot</label>
+              <input type="text" id="walletDot" name="walletDot" placeholder="1...">
+            </div>
+            <div class="field chain-field">
+              <label><span class="chain-dot"></span>Tezos</label>
+              <input type="text" id="walletTez" name="walletTez" placeholder="tz1...">
+            </div>
+            <div class="field chain-field">
+              <label><span class="chain-dot"></span>Cardano (ADA)</label>
+              <input type="text" id="walletAda" name="walletAda" placeholder="addr1...">
+            </div>
+            <div class="field chain-field">
+              <label><span class="chain-dot"></span>XRPL</label>
+              <input type="text" id="walletXrp" name="walletXrp" placeholder="r...">
+            </div>
+            <div class="field chain-field">
+              <label><span class="chain-dot"></span>Bitcoin</label>
+              <input type="text" id="walletBtc" name="walletBtc" placeholder="bc1...">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="walletOther">Other chain / address (optional)</label>
+            <input type="text" id="walletOther" name="walletOther" placeholder="e.g. Solana: ...">
+          </div>
+
+          <button type="submit" class="btn primary full" id="submitBtn" data-magnetic><span>Transmit Signup</span></button>
+          <div class="terminal-status" id="statusLine"></div>
+        </form>
+
+        <div class="success-panel" id="successPanel">
+          <h3>&gt; ACCESS GRANTED</h3>
+          <p>You're in. Save these three — they're the same materials queued for your welcome transmission.</p>
+          <div class="resource-row">
+            <div><div class="rlabel">Music Blockchain Initiatives</div><div class="rmeta">Miro mind map</div></div>
+            <a class="btn small ghost" href="https://miro.com/app/board/o9J_kqkQyeI=/?moveToWidget=3458764514051869007&amp;cot=14" target="_blank" rel="noopener"><span>Open →</span></a>
+          </div>
+          <div class="resource-row">
+            <div><div class="rlabel">Goodwaves Onboarding sesh</div><div class="rmeta">Google Slides</div></div>
+            <a class="btn small ghost" href="https://docs.google.com/presentation/d/10DesrKKe9Vd_xIjJ_7yJ9j1-n0j9D0xx/edit?usp=sharing&amp;ouid=113354780348049653404&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener"><span>Open →</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="m0b-mark">M0B — MUSICIANS ON BLOCKCHAIN</span>
+    Your first mint is a signal, not a shortcut. Read the archive, secure your wallet, then transmit.
+  </footer>
+
+</main>
+
+<script>
+  // ---------- magnetic / glow buttons ----------
+  document.querySelectorAll('[data-magnetic], .btn').forEach(function(btn){
+    btn.addEventListener('mousemove', function(e){
+      var r = btn.getBoundingClientRect();
+      btn.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      btn.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  // ---------- scroll reveal ----------
+  var revealEls = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add('in'); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(function(el){ io.observe(el); });
+
+  // ---------- rail nav active state ----------
+  var sections = document.querySelectorAll('main section');
+  var navLinks = document.querySelectorAll('.railnav a');
+  var navIo = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      var link = document.querySelector('.railnav a[data-target="'+en.target.id+'"]');
+      if(!link) return;
+      if(en.isIntersecting){ navLinks.forEach(function(l){ l.classList.remove('active'); }); link.classList.add('active'); }
+    });
+  }, { threshold: 0.5 });
+  sections.forEach(function(s){ navIo.observe(s); });
+
+  // ---------- fast, eased in-page scroll ----------
+  function easeInOutQuint(t){ return t < 0.5 ? 16*t*t*t*t*t : 1 - Math.pow(-2*t+2, 5)/2; }
+
+  function fastScrollTo(targetEl, duration){
+    var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(prefersReduced){
+      targetEl.scrollIntoView();
+      return;
+    }
+    duration = duration || 650;
+    var startY = window.scrollY || window.pageYOffset;
+    var targetY = targetEl.getBoundingClientRect().top + startY;
+    var diff = targetY - startY;
+    var startTime = null;
+    function step(ts){
+      if(!startTime) startTime = ts;
+      var elapsed = ts - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      window.scrollTo(0, startY + diff * easeInOutQuint(progress));
+      if(progress < 1){ requestAnimationFrame(step); }
+    }
+    requestAnimationFrame(step);
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(function(link){
+    link.addEventListener('click', function(e){
+      var id = link.getAttribute('href').slice(1);
+      var target = document.getElementById(id);
+      if(!target) return;
+      e.preventDefault();
+
+      if(link.classList.contains('btn')){
+        link.classList.add('pulse-click');
+        setTimeout(function(){ link.classList.remove('pulse-click'); }, 420);
+      }
+
+      fastScrollTo(target, 650);
+    });
+  });
+
+  // ---------- form submit ----------
+  // 1. Deploy the Apps Script (see setup notes) as a Web App.
+  // 2. Paste that Web App URL below. Until you do, the form will show a
+  //    clear local error instead of silently failing.
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTGD3J4WI4NWeGN3LH-0CmF-mCG4Xd129SMcgwCJDiNrxGZsFCDDDaPHfVV0vZ61lRZg/exec';
+
+  var form = document.getElementById('joinForm');
+  var statusLine = document.getElementById('statusLine');
+  var successPanel = document.getElementById('successPanel');
+  var submitBtn = document.getElementById('submitBtn');
+  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function typeStatus(text){
+    statusLine.textContent = '';
+    var i = 0;
+    var iv = setInterval(function(){
+      statusLine.textContent += text[i];
+      i++;
+      if(i >= text.length) clearInterval(iv);
+    }, 14);
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var name = document.getElementById('artistName').value.trim();
+    var link = document.getElementById('artistLink').value.trim();
+    var email = document.getElementById('artistEmail').value.trim();
+
+    var wallets = {
+      evm: document.getElementById('walletEvm').value.trim(),
+      polkadot: document.getElementById('walletDot').value.trim(),
+      tezos: document.getElementById('walletTez').value.trim(),
+      cardano: document.getElementById('walletAda').value.trim(),
+      xrpl: document.getElementById('walletXrp').value.trim(),
+      bitcoin: document.getElementById('walletBtc').value.trim(),
+      other: document.getElementById('walletOther').value.trim()
+    };
+
+    if(!name || !link || !email){
+      typeStatus('> ERROR: artist name, link, and email are required.');
+      return;
+    }
+    if(!emailPattern.test(email)){
+      typeStatus('> ERROR: that email address doesn\'t look valid.');
+      return;
+    }
+    if(SCRIPT_URL.indexOf('PASTE_YOUR') === 0){
+      typeStatus('> ERROR: backend not connected yet — SCRIPT_URL is unset in the code.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    typeStatus('> transmitting signup...');
+
+    var entry = {
+      artistName: name,
+      artistLink: link,
+      email: email,
+      wallets: wallets,
+      submittedAt: new Date().toISOString()
+    };
+
+    try{
+      // Apps Script web apps don't return CORS headers a browser can read,
+      // so this fires as a one-way ("no-cors") request. The request still
+      // reaches the script and runs — we just can't read a response back.
+      // text/plain avoids a CORS preflight request, which Apps Script
+      // web apps don't handle.
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(entry)
+      });
+      typeStatus('> signal received. welcome transmission is on its way.');
+      setTimeout(function(){
+        form.classList.add('submitted');
+        successPanel.classList.add('show');
+      }, 500);
+    }catch(err){
+      typeStatus('> transmission failed — check your connection and try again.');
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
