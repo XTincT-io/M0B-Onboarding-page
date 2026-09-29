@@ -1,4 +1,4 @@
-# Contributing to M0B
+# Contributing to BPM
 
 Thanks for considering a contribution. This is a small, single-file static
 site plus a Google Apps Script backend, so the process is intentionally
@@ -29,7 +29,7 @@ lightweight.
    - The Sheet receives a new row
    - The welcome email sends
    - Required-field validation still works
-5. If your change touches `backend/m0b-signup-backend.gs`, note that pushing
+5. If your change touches `backend/bpm-signup-backend.gs`, note that pushing
    to this repo does **not** auto-deploy the script — Apps Script deployments
    are managed separately through the Apps Script editor. Mention in your PR
    description that the deployed script will need to be manually updated to

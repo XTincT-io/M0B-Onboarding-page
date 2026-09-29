@@ -3,7 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M0B — Musicians On Blockchain // Onboarding Transmission</title>
+<title>BPM — Blockchain Powered Musicians // Onboarding Transmission</title>
+<meta name="description" content="Mint your first music NFT the right way. Wallets, blockchain basics, wallet safety, and the onboarding archive — all in one place. A M0B (Musicians On Blockchain) community project.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="BPM — Blockchain Powered Musicians">
+<meta property="og:description" content="Mint your first music NFT the right way. Wallets, blockchain basics, wallet safety, and the onboarding archive — all in one place.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:url" content="https://misty-lake-25c6.0x-xtinct.workers.dev/">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BPM — Blockchain Powered Musicians">
+<meta name="twitter:description" content="Mint your first music NFT the right way. Wallets, blockchain basics, wallet safety, and the onboarding archive — all in one place.">
+<meta name="twitter:image" content="og-image.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2307060B'/%3E%3Ctext x='50' y='68' font-family='monospace' font-weight='700' font-size='58' fill='%23FF2E6C' text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
@@ -292,7 +306,13 @@
   }
   .field input::placeholder{ color:rgba(139,133,163,0.6); }
   .field input:focus{ border-color:var(--cyan); box-shadow:0 0 0 3px var(--cyan-dim); }
+  .field input.invalid{ border-color:var(--amber); }
+  .field input.invalid:focus{ box-shadow:0 0 0 3px rgba(255,176,32,0.28); }
   .field-hint{ font-size:11.5px; color:var(--text-dim); margin-top:6px; }
+  .field-warn{ font-size:11.5px; color:var(--amber); margin-top:6px; min-height:0; display:none; }
+  .field-warn.show{ display:block; }
+  .hp-field{ position:absolute; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden; }
+  .privacy-note{ font-size:12px; line-height:1.6; color:var(--text-dim); margin:22px 0 20px; }
 
   .chain-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px 20px; }
   @media (max-width:640px){ .chain-grid{ grid-template-columns:1fr; } }
@@ -321,7 +341,8 @@
     padding:52px 8vw 60px; text-align:center; color:var(--text-dim); font-size:12.5px;
     letter-spacing:0.06em;
   }
-  footer .m0b-mark{ font-family:'Chakra Petch',sans-serif; color:var(--text); font-weight:700; letter-spacing:0.1em; margin-bottom:10px; display:block;}
+  footer .bpm-mark{ font-family:'Chakra Petch',sans-serif; color:var(--text); font-weight:700; letter-spacing:0.1em; margin-bottom:10px; display:block;}
+  footer .m0b-credit{ display:block; margin-top:10px; opacity:0.55; font-size:11px; letter-spacing:0.08em; }
 
   a.textlink{ color:var(--cyan); text-decoration:none; border-bottom:1px solid var(--cyan-dim); transition:border-color .3s ease;}
   a.textlink:hover{ border-color:var(--cyan); }
@@ -336,7 +357,7 @@
 
 <nav class="railnav" id="railnav">
   <a href="#hero" data-target="hero"><span class="dot-label">SIGNAL</span><span class="dot"></span></a>
-  <a href="#transmission" data-target="transmission"><span class="dot-label">M0B</span><span class="dot"></span></a>
+  <a href="#transmission" data-target="transmission"><span class="dot-label">BPM</span><span class="dot"></span></a>
   <a href="#protocol" data-target="protocol"><span class="dot-label">PROTOCOL</span><span class="dot"></span></a>
   <a href="#wallets" data-target="wallets"><span class="dot-label">WALLETS</span><span class="dot"></span></a>
   <a href="#safety" data-target="safety"><span class="dot-label">SAFETY</span><span class="dot"></span></a>
@@ -349,9 +370,9 @@
   <!-- HERO -->
   <section id="hero">
     <div class="section-inner">
-      <div class="hero-tag"><span class="pulse-dot"></span> LIVE FEED — ONBOARDING SEQUENCE INITIATED</div>
-      <h1 class="hero-title">M<span class="glitch-wrap">0</span>B<span class="type-cursor"></span></h1>
-      <p class="hero-sub">Musicians On Blockchain. A multi-chain home for artists minting their first release as a real, ownable asset — no gatekeepers, no label math, just your work on-chain. This is the full transmission: wallets, protocol basics, safety, and the archive you'll need before you mint.</p>
+      <div class="hero-tag"><span class="pulse-dot"></span> LIVE FEED — AN M0B COMMUNITY INITIATIVE</div>
+      <h1 class="hero-title">B<span class="glitch-wrap">P</span>M<span class="type-cursor"></span></h1>
+      <p class="hero-sub">Blockchain Powered Musicians. A multi-chain home for artists minting their first release as a real, ownable asset — no gatekeepers, no label math, just your work on-chain. This is the full transmission: wallets, protocol basics, safety, and the archive you'll need before you mint.</p>
       <div class="hero-ctas">
         <a href="#join" class="btn primary fast-scroll" data-magnetic><span>Join the Signal</span></a>
       </div>
@@ -362,8 +383,8 @@
   <section id="transmission">
     <div class="section-inner reveal">
       <div class="eyebrow">Transmission 01</div>
-      <h2>What <span class="accent">M0B</span> actually is</h2>
-      <p class="lede">Musicians On Blockchain is a community and toolset for artists releasing music as NFTs — across chains, not locked to one ecosystem. No prior crypto experience required. This page is the entire on-ramp: read it top to bottom, get your wallet ready, then join.</p>
+      <h2>What <span class="accent">BPM</span> actually is</h2>
+      <p class="lede">Blockchain Powered Musicians is a community and toolset for artists releasing music as NFTs — across chains, not locked to one ecosystem. No prior crypto experience required. This page is the entire on-ramp: read it top to bottom, get your wallet ready, then join. BPM is built and stewarded by <strong>M0B</strong> — Musicians On Blockchain — the artist collective this platform exists for.</p>
       <div class="grid cols-3">
         <div class="card">
           <div class="idx">// WHO IT'S FOR</div>
@@ -373,7 +394,7 @@
         <div class="card">
           <div class="idx">// WHY MULTI-CHAIN</div>
           <h3>No single point of lock-in</h3>
-          <p>EVM, Polkadot, Tezos, Cardano, XRPL, Bitcoin — different chains suit different releases and audiences. M0B doesn't force one.</p>
+          <p>EVM, Polkadot, Tezos, Cardano, XRPL, Bitcoin — different chains suit different releases and audiences. BPM doesn't force one.</p>
         </div>
         <div class="card">
           <div class="idx">// WHAT YOU GET</div>
@@ -422,12 +443,12 @@
       <h2>Get a wallet per chain</h2>
       <p class="lede">A wallet is your identity and your signature on-chain — it's what you'll use to mint, receive, and sell. You don't need all of these; only set up a wallet for the chain(s) you plan to release on.</p>
       <div class="grid cols-3">
-        <div class="card wallet"><div class="idx">EVM</div><h3>Ethereum / Base / Polygon</h3><p>MetaMask, Rainbow, or Coinbase Wallet. The most widely supported across NFT marketplaces.</p></div>
-        <div class="card wallet"><div class="idx">POLKADOT</div><h3>Polkadot / parachains</h3><p>Polkadot{.js}, Talisman, or SubWallet.</p></div>
-        <div class="card wallet"><div class="idx">TEZOS</div><h3>Tezos (XTZ)</h3><p>Temple Wallet or Kukai — the standard pair for Tezos-based NFT platforms.</p></div>
-        <div class="card wallet"><div class="idx">CARDANO</div><h3>Cardano (ADA)</h3><p>Eternl, Yoroi, or Nami.</p></div>
-        <div class="card wallet"><div class="idx">XRPL</div><h3>XRP Ledger</h3><p>Xaman (formerly Xumm) — the default wallet for XRPL-native NFTs.</p></div>
-        <div class="card wallet"><div class="idx">BITCOIN</div><h3>Bitcoin (Ordinals)</h3><p>Sparrow or Xverse for ordinals, or a Ledger/Trezor hardware wallet for cold storage.</p></div>
+        <div class="card wallet"><div class="idx">EVM</div><h3>Ethereum / Base / Polygon</h3><p><a class="textlink" href="https://metamask.io" target="_blank" rel="noopener">MetaMask</a>, <a class="textlink" href="https://rainbow.me" target="_blank" rel="noopener">Rainbow</a>, or <a class="textlink" href="https://www.coinbase.com/wallet" target="_blank" rel="noopener">Coinbase Wallet</a>. The most widely supported across NFT marketplaces.</p></div>
+        <div class="card wallet"><div class="idx">POLKADOT</div><h3>Polkadot / parachains</h3><p><a class="textlink" href="https://polkadot.js.org/extension/" target="_blank" rel="noopener">Polkadot{.js}</a>, <a class="textlink" href="https://talisman.xyz" target="_blank" rel="noopener">Talisman</a>, or <a class="textlink" href="https://www.subwallet.app" target="_blank" rel="noopener">SubWallet</a>.</p></div>
+        <div class="card wallet"><div class="idx">TEZOS</div><h3>Tezos (XTZ)</h3><p><a class="textlink" href="https://templewallet.com" target="_blank" rel="noopener">Temple Wallet</a> or <a class="textlink" href="https://kukai.app" target="_blank" rel="noopener">Kukai</a> — the standard pair for Tezos-based NFT platforms.</p></div>
+        <div class="card wallet"><div class="idx">CARDANO</div><h3>Cardano (ADA)</h3><p><a class="textlink" href="https://eternl.io" target="_blank" rel="noopener">Eternl</a>, <a class="textlink" href="https://yoroi-wallet.com" target="_blank" rel="noopener">Yoroi</a>, or <a class="textlink" href="https://www.lace.io" target="_blank" rel="noopener">Lace</a>.</p></div>
+        <div class="card wallet"><div class="idx">XRPL</div><h3>XRP Ledger</h3><p><a class="textlink" href="https://xaman.app" target="_blank" rel="noopener">Xaman</a> (formerly Xumm) — the default wallet for XRPL-native NFTs.</p></div>
+        <div class="card wallet"><div class="idx">BITCOIN</div><h3>Bitcoin (Ordinals)</h3><p><a class="textlink" href="https://sparrowwallet.com" target="_blank" rel="noopener">Sparrow</a> or <a class="textlink" href="https://www.xverse.app" target="_blank" rel="noopener">Xverse</a> for ordinals, or a <a class="textlink" href="https://www.ledger.com" target="_blank" rel="noopener">Ledger</a>/<a class="textlink" href="https://trezor.io" target="_blank" rel="noopener">Trezor</a> hardware wallet for cold storage.</p></div>
       </div>
       <div class="chip-row">
         <span class="chip">One seed phrase = one wallet</span>
@@ -458,7 +479,7 @@
         </div>
         <div class="path-step">
           <h3 style="margin:0 0 6px;">Use a hardware wallet for anything valuable</h3>
-          <p style="color:var(--text-dim); margin:0; font-size:14.5px; line-height:1.65;">A Ledger or Trezor keeps your keys offline. For a wallet holding real earnings or masters, this is the single biggest upgrade you can make.</p>
+          <p style="color:var(--text-dim); margin:0; font-size:14.5px; line-height:1.65;">A <a class="textlink" href="https://www.ledger.com" target="_blank" rel="noopener">Ledger</a> or <a class="textlink" href="https://trezor.io" target="_blank" rel="noopener">Trezor</a> keeps your keys offline. For a wallet holding real earnings or masters, this is the single biggest upgrade you can make.</p>
         </div>
         <div class="path-step">
           <h3 style="margin:0 0 6px;">Separate "hot" and "cold" wallets</h3>
@@ -493,7 +514,7 @@
 
       <div class="resource-row" style="opacity:0.6;">
         <div>
-          <div class="rlabel">M0B Whitepaper</div>
+          <div class="rlabel">BPM Whitepaper</div>
           <div class="rmeta">Link pending — add your whitepaper URL to activate this card</div>
         </div>
         <span class="btn small" style="pointer-events:none; border-style:dashed;"><span>Coming Soon</span></span>
@@ -505,11 +526,17 @@
   <section id="join">
     <div class="section-inner reveal">
       <div class="eyebrow">Transmission 06 — Final</div>
-      <h2>Join the <span class="accent">M0B</span> signal</h2>
+      <h2>Join the <span class="accent">BPM</span> signal</h2>
       <p class="lede">Give us your artist name, a link to your work, and whichever wallet address(es) you'll be minting from. Everything else is optional — fill in only the chains you use.</p>
 
       <div class="join-wrap">
         <form id="joinForm" novalidate>
+          <!-- honeypot: invisible to real users, real bots often fill every field they find -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="hp_field">Leave this field blank</label>
+            <input type="text" id="hp_field" name="hp_field" tabindex="-1" autocomplete="off">
+          </div>
+
           <div class="field">
             <label for="artistName">Artist / Project Name<span class="req">*</span></label>
             <input type="text" id="artistName" name="artistName" placeholder="e.g. XTincT" required>
@@ -530,26 +557,32 @@
             <div class="field chain-field">
               <label><span class="chain-dot"></span>EVM (ETH / Base / Polygon)</label>
               <input type="text" id="walletEvm" name="walletEvm" placeholder="0x...">
+              <div class="field-warn" id="warnEvm"></div>
             </div>
             <div class="field chain-field">
               <label><span class="chain-dot"></span>Polkadot</label>
               <input type="text" id="walletDot" name="walletDot" placeholder="1...">
+              <div class="field-warn" id="warnDot"></div>
             </div>
             <div class="field chain-field">
               <label><span class="chain-dot"></span>Tezos</label>
               <input type="text" id="walletTez" name="walletTez" placeholder="tz1...">
+              <div class="field-warn" id="warnTez"></div>
             </div>
             <div class="field chain-field">
               <label><span class="chain-dot"></span>Cardano (ADA)</label>
               <input type="text" id="walletAda" name="walletAda" placeholder="addr1...">
+              <div class="field-warn" id="warnAda"></div>
             </div>
             <div class="field chain-field">
               <label><span class="chain-dot"></span>XRPL</label>
               <input type="text" id="walletXrp" name="walletXrp" placeholder="r...">
+              <div class="field-warn" id="warnXrp"></div>
             </div>
             <div class="field chain-field">
               <label><span class="chain-dot"></span>Bitcoin</label>
               <input type="text" id="walletBtc" name="walletBtc" placeholder="bc1...">
+              <div class="field-warn" id="warnBtc"></div>
             </div>
           </div>
 
@@ -557,6 +590,8 @@
             <label for="walletOther">Other chain / address (optional)</label>
             <input type="text" id="walletOther" name="walletOther" placeholder="e.g. Solana: ...">
           </div>
+
+          <p class="privacy-note">Your artist info and public wallet addresses are stored to build the BPM/M0B community roster and to send your one welcome email. Never sold, never shared with third parties.</p>
 
           <button type="submit" class="btn primary full" id="submitBtn" data-magnetic><span>Transmit Signup</span></button>
           <div class="terminal-status" id="statusLine"></div>
@@ -579,8 +614,9 @@
   </section>
 
   <footer>
-    <span class="m0b-mark">M0B — MUSICIANS ON BLOCKCHAIN</span>
+    <span class="bpm-mark">BPM — BLOCKCHAIN POWERED MUSICIANS</span>
     Your first mint is a signal, not a shortcut. Read the archive, secure your wallet, then transmit.
+    <span class="m0b-credit">A M0B (Musicians On Blockchain) community production</span>
   </footer>
 
 </main>
@@ -661,12 +697,55 @@
   // 2. Paste that Web App URL below. Until you do, the form will show a
   //    clear local error instead of silently failing.
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTGD3J4WI4NWeGN3LH-0CmF-mCG4Xd129SMcgwCJDiNrxGZsFCDDDaPHfVV0vZ61lRZg/exec';
+  var PAGE_LOADED_AT = Date.now();
+
+  // fire-and-forget self-hosted pageview log — no third-party analytics, no cookies
+  if(SCRIPT_URL.indexOf('PASTE_YOUR') !== 0){
+    try{
+      fetch(SCRIPT_URL + '?event=pageview&page=' + encodeURIComponent(location.pathname) + '&ref=' + encodeURIComponent(document.referrer || ''), { mode: 'no-cors' }).catch(function(){});
+    }catch(err){}
+  }
 
   var form = document.getElementById('joinForm');
   var statusLine = document.getElementById('statusLine');
   var successPanel = document.getElementById('successPanel');
   var submitBtn = document.getElementById('submitBtn');
   var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // per-chain format checks — only enforced when the field isn't empty
+  var walletPatterns = {
+    evm:      { re: /^0x[a-fA-F0-9]{40}$/,                  warnId: 'warnEvm', label: 'Doesn\'t look like an EVM address (should start with 0x, 42 characters).' },
+    polkadot: { re: /^[1-9A-HJ-NP-Za-km-z]{46,48}$/,         warnId: 'warnDot', label: 'Doesn\'t look like a Polkadot address.' },
+    tezos:    { re: /^tz[1-3][a-zA-Z0-9]{33}$/,              warnId: 'warnTez', label: 'Doesn\'t look like a Tezos address (should start with tz1/tz2/tz3).' },
+    cardano:  { re: /^addr1[a-z0-9]{20,}$/i,                 warnId: 'warnAda', label: 'Doesn\'t look like a Cardano address (should start with addr1).' },
+    xrpl:     { re: /^r[1-9A-HJ-NP-Za-km-z]{24,34}$/,        warnId: 'warnXrp', label: 'Doesn\'t look like an XRPL address (should start with r).' },
+    bitcoin:  { re: /^(bc1[a-z0-9]{25,60}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/, warnId: 'warnBtc', label: 'Doesn\'t look like a Bitcoin address.' }
+  };
+  var walletFieldIds = { evm: 'walletEvm', polkadot: 'walletDot', tezos: 'walletTez', cardano: 'walletAda', xrpl: 'walletXrp', bitcoin: 'walletBtc' };
+
+  function validateWalletField(key){
+    var input = document.getElementById(walletFieldIds[key]);
+    var warnEl = document.getElementById(walletPatterns[key].warnId);
+    var value = input.value.trim();
+    if(!value){
+      input.classList.remove('invalid');
+      warnEl.classList.remove('show');
+      return true;
+    }
+    var valid = walletPatterns[key].re.test(value);
+    input.classList.toggle('invalid', !valid);
+    warnEl.textContent = valid ? '' : walletPatterns[key].label;
+    warnEl.classList.toggle('show', !valid);
+    return valid;
+  }
+
+  Object.keys(walletFieldIds).forEach(function(key){
+    var input = document.getElementById(walletFieldIds[key]);
+    input.addEventListener('blur', function(){ validateWalletField(key); });
+    input.addEventListener('input', function(){
+      if(input.classList.contains('invalid')) validateWalletField(key);
+    });
+  });
 
   function typeStatus(text){
     statusLine.textContent = '';
@@ -683,6 +762,7 @@
     var name = document.getElementById('artistName').value.trim();
     var link = document.getElementById('artistLink').value.trim();
     var email = document.getElementById('artistEmail').value.trim();
+    var honeypot = document.getElementById('hp_field').value.trim();
 
     var wallets = {
       evm: document.getElementById('walletEvm').value.trim(),
@@ -702,6 +782,13 @@
       typeStatus('> ERROR: that email address doesn\'t look valid.');
       return;
     }
+
+    var allWalletsValid = Object.keys(walletFieldIds).every(function(key){ return validateWalletField(key); });
+    if(!allWalletsValid){
+      typeStatus('> ERROR: one or more wallet addresses don\'t match the expected format.');
+      return;
+    }
+
     if(SCRIPT_URL.indexOf('PASTE_YOUR') === 0){
       typeStatus('> ERROR: backend not connected yet — SCRIPT_URL is unset in the code.');
       return;
@@ -715,6 +802,8 @@
       artistLink: link,
       email: email,
       wallets: wallets,
+      hp_field: honeypot,
+      pageLoadedAt: PAGE_LOADED_AT,
       submittedAt: new Date().toISOString()
     };
 
