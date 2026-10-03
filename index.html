@@ -50,6 +50,14 @@
   }
   ::selection{background:var(--signal); color:var(--void);}
 
+  .skip-link{
+    position:absolute; left:-9999px; top:0; z-index:100;
+    background:var(--signal); color:#160310; padding:12px 20px;
+    font-family:'Chakra Petch',sans-serif; font-weight:600; text-decoration:none;
+    border-radius:0 0 8px 0;
+  }
+  .skip-link:focus{ left:0; }
+
   h1,h2,h3, .mono, .eyebrow, .btn, nav .dot-label, .field label, .chip, .term{
     font-family:'Chakra Petch', sans-serif;
     letter-spacing:0.02em;
@@ -352,10 +360,12 @@
 </head>
 <body>
 
-<div class="crt-scanlines"></div>
-<div class="crt-vignette"></div>
-<div class="crt-flicker"></div>
-<div class="noise-grid"></div>
+<a href="#hero" class="skip-link">Skip to content</a>
+
+<div class="crt-scanlines" aria-hidden="true"></div>
+<div class="crt-vignette" aria-hidden="true"></div>
+<div class="crt-flicker" aria-hidden="true"></div>
+<div class="noise-grid" aria-hidden="true"></div>
 
 <nav class="railnav" id="railnav">
   <a href="#hero" data-target="hero"><span class="dot-label">SIGNAL</span><span class="dot"></span></a>
@@ -372,7 +382,7 @@
   <!-- HERO -->
   <section id="hero">
     <div class="section-inner">
-      <div class="hero-tag"><span class="pulse-dot"></span> LIVE FEED — AN M0B COMMUNITY INITIATIVE</div>
+      <div class="hero-tag"><span class="pulse-dot" aria-hidden="true"></span> LIVE FEED — AN M0B COMMUNITY INITIATIVE</div>
       <h1 class="hero-title">B<span class="glitch-wrap">P</span>M<span class="type-cursor"></span></h1>
       <p class="hero-sub">Blockchain Powered Musicians. A multi-chain home for artists minting their first release as a real, ownable asset — no gatekeepers, no label math, just your work on-chain. This is the full transmission: wallets, protocol basics, safety, and the archive you'll need before you mint.</p>
       <div class="hero-ctas">
@@ -557,32 +567,32 @@
 
           <div class="chain-grid">
             <div class="field chain-field">
-              <label><span class="chain-dot"></span>EVM (ETH / Base / Polygon)</label>
+              <label><span class="chain-dot" aria-hidden="true"></span>EVM (ETH / Base / Polygon)</label>
               <input type="text" id="walletEvm" name="walletEvm" placeholder="0x...">
               <div class="field-warn" id="warnEvm"></div>
             </div>
             <div class="field chain-field">
-              <label><span class="chain-dot"></span>Polkadot</label>
+              <label><span class="chain-dot" aria-hidden="true"></span>Polkadot</label>
               <input type="text" id="walletDot" name="walletDot" placeholder="1...">
               <div class="field-warn" id="warnDot"></div>
             </div>
             <div class="field chain-field">
-              <label><span class="chain-dot"></span>Tezos</label>
+              <label><span class="chain-dot" aria-hidden="true"></span>Tezos</label>
               <input type="text" id="walletTez" name="walletTez" placeholder="tz1...">
               <div class="field-warn" id="warnTez"></div>
             </div>
             <div class="field chain-field">
-              <label><span class="chain-dot"></span>Cardano (ADA)</label>
+              <label><span class="chain-dot" aria-hidden="true"></span>Cardano (ADA)</label>
               <input type="text" id="walletAda" name="walletAda" placeholder="addr1...">
               <div class="field-warn" id="warnAda"></div>
             </div>
             <div class="field chain-field">
-              <label><span class="chain-dot"></span>XRPL</label>
+              <label><span class="chain-dot" aria-hidden="true"></span>XRPL</label>
               <input type="text" id="walletXrp" name="walletXrp" placeholder="r...">
               <div class="field-warn" id="warnXrp"></div>
             </div>
             <div class="field chain-field">
-              <label><span class="chain-dot"></span>Bitcoin</label>
+              <label><span class="chain-dot" aria-hidden="true"></span>Bitcoin</label>
               <input type="text" id="walletBtc" name="walletBtc" placeholder="bc1...">
               <div class="field-warn" id="warnBtc"></div>
             </div>
@@ -619,7 +629,7 @@
     <span class="bpm-mark">BPM — BLOCKCHAIN POWERED MUSICIANS</span>
     Your first mint is a signal, not a shortcut. Read the archive, secure your wallet, then transmit.
     <span class="m0b-credit">A M0B (Musicians On Blockchain) community production</span>
-    <span class="build-tag">build 2026-09-30-r2</span>
+    <span class="build-tag">build 2026-09-30-r3</span>
   </footer>
 
 </main>
